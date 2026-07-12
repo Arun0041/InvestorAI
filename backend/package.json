@@ -1,0 +1,19 @@
+{
+  "name": "investment-agent-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "@langchain/core": "^0.3.26",
+    "@langchain/google-genai": "^0.1.6",
+    "@langchain/langgraph": "^0.2.36",
+    "@langchain/community": "^0.3.19",
+    "langchain": "^0.3.7"
+  }
+}
