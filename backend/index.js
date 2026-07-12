@@ -25,6 +25,10 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Serve compiled static frontend assets in production
+const frontendDistPath = path.resolve(__dirname, "../frontend/dist");
+app.use(express.static(frontendDistPath));
+
 // ─── Health Check ───────────────────────────────────────────
 
 app.get("/api/health", (req, res) => {
@@ -93,6 +97,14 @@ app.get("/api/research", async (req, res) => {
     clearInterval(heartbeat);
     res.end();
   }
+});
+
+// Wildcard route to serve index.html for any frontend client-side routes
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+  res.sendFile(path.join(frontendDistPath, "index.html"));
 });
 
 // ─── Start Server ───────────────────────────────────────────
