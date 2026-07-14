@@ -52,9 +52,12 @@ app.get("/api/research", async (req, res) => {
     return res.status(400).json({ error: "Company name is required. Use ?company=Tesla" });
   }
 
-  if (!process.env.GOOGLE_API_KEY || process.env.GOOGLE_API_KEY.includes("your_google_gemini_api_key_here")) {
+  const hasGroqKey = process.env.GROQ_API_KEY && !process.env.GROQ_API_KEY.includes("your_groq_api_key_here");
+  const hasGoogleKey = process.env.GOOGLE_API_KEY && !process.env.GOOGLE_API_KEY.includes("your_google_gemini_api_key_here");
+
+  if (!hasGroqKey && !hasGoogleKey) {
     return res.status(500).json({
-      error: "Invalid Google Gemini API Key. Please replace 'your_google_gemini_api_key_here' with your actual Gemini API key in the .env file at the project root.",
+      error: "No valid API key found. Please configure either GOOGLE_API_KEY (for Gemini, 1,500 daily requests) or GROQ_API_KEY (for Llama 3.3, 6,000 daily requests) in the .env file at the project root.",
     });
   }
 
@@ -110,6 +113,8 @@ app.get("*", (req, res, next) => {
 // ─── Start Server ───────────────────────────────────────────
 
 app.listen(PORT, () => {
+  const hasGroqKey = process.env.GROQ_API_KEY && !process.env.GROQ_API_KEY.includes("your_groq_api_key_here");
+  const hasGoogleKey = process.env.GOOGLE_API_KEY && !process.env.GOOGLE_API_KEY.includes("your_google_gemini_api_key_here");
   console.log(`
 ╔══════════════════════════════════════════════════════╗
 ║       🚀 AI Investment Research Agent Server        ║
@@ -120,7 +125,8 @@ app.listen(PORT, () => {
 ║  Health:   http://localhost:${PORT}/api/health          ║
 ║                                                      ║
 ║  API Keys:                                           ║
-║    Google Gemini: ${process.env.GOOGLE_API_KEY ? "✅ Configured" : "❌ Missing (required)"}           ║
+║    Groq (Llama):  ${hasGroqKey ? "✅ Configured (Active)" : "❌ Missing"}           ║
+║    Google Gemini: ${hasGoogleKey ? "✅ Configured" : "❌ Missing"}           ║
 ║    Tavily Search: ${process.env.TAVILY_API_KEY ? "✅ Configured" : "⚠️  Missing (optional)"}           ║
 ║                                                      ║
 ╚══════════════════════════════════════════════════════╝

@@ -19,6 +19,7 @@
 
 import { StateGraph, START, END } from "@langchain/langgraph";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
@@ -35,8 +36,18 @@ import {
 // ─── LLM & Tool Factories ──────────────────────────────────
 
 function createLLM() {
+  if (process.env.GROQ_API_KEY && !process.env.GROQ_API_KEY.includes("your_groq_api_key_here")) {
+    console.log("🤖 Using Groq LLM (llama-3.3-70b-specdec)");
+    return new ChatGroq({
+      model: "llama-3.3-70b-specdec",
+      temperature: 0.3,
+      apiKey: process.env.GROQ_API_KEY,
+    });
+  }
+
+  console.log("🤖 Using Google Gemini LLM (gemini-2.0-flash)");
   return new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.0-flash", // Reverted to 2.0-flash (1500 RPD) for higher limits
     temperature: 0.3,
     apiKey: process.env.GOOGLE_API_KEY,
   });
