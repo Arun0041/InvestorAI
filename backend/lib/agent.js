@@ -37,9 +37,9 @@ import {
 
 function createLLM() {
   if (process.env.GROQ_API_KEY && !process.env.GROQ_API_KEY.includes("your_groq_api_key_here")) {
-    console.log("🤖 Using Groq LLM (llama-3.3-70b-specdec)");
+    console.log("🤖 Using Groq LLM (llama-3.3-70b-versatile)");
     return new ChatGroq({
-      model: "llama-3.3-70b-specdec",
+      model: "llama-3.3-70b-versatile",
       temperature: 0.3,
       apiKey: process.env.GROQ_API_KEY,
     });
